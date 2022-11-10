@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "278843445249",
+    "project_id": "ecosystem-c1cdc",
+    "storage_bucket": "ecosystem-c1cdc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:278843445249:android:f7894dc46da9d15c077000",
+        "android_client_info": {
+          "package_name": "com.example.eco_system"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "278843445249-g1303jt82jao41jf9204ha9ite3bq403.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiRDuf7j2lmQF-nu2CfUM1WzgUcFg30l4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "278843445249-g1303jt82jao41jf9204ha9ite3bq403.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

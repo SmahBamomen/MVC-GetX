@@ -1,3 +1,4 @@
+import 'package:eco_system/logic/controllers/auth_controller.dart';
 import 'package:eco_system/utils/my_string.dart';
 import 'package:eco_system/utils/theme.dart';
 import 'package:eco_system/view/widgets/auth/auth_button.dart';
@@ -8,6 +9,7 @@ class ForgetPasswordScreen extends StatelessWidget {
    ForgetPasswordScreen({Key? key}) : super(key: key);
 final formKey = GlobalKey<FormState>();
    final TextEditingController emailController = TextEditingController();
+   final controller = Get.find<AuthController>();
   @override
   Widget build(BuildContext context) {
     return SafeArea(child:
@@ -69,9 +71,15 @@ body: Form(
             hintText: "Email",
           ),
           const  SizedBox(height: 50),
-          AuthButton(text: "SEND", onPressed: (){
+        GetBuilder<AuthController>(builder: (_){
+         return AuthButton(text: "SEND", onPressed: (){
+           if(formKey.currentState!.validate()){
+             String email = emailController.text.trim();
+             controller.resetPasswordFirebase(email);
+           }
 
-          })
+          });
+        })
 
         ],
       ),

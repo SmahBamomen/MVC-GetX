@@ -33,70 +33,72 @@ class LoginScreen extends StatelessWidget {
                 height: MediaQuery.of(context).size.height / 1.3,
                 child: Padding(
                   padding: EdgeInsets.only(left: 25, right: 25, top: 40),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          TextUtils(
-                              text: "LOG",
-                              fontSize: 28,
-                              fontWeight: FontWeight.w500,
-                              color:Get.isDarkMode ? mainColor:pinkClr,
-                              underLine: TextDecoration.none),
-                          SizedBox(width: 3),
-                          TextUtils(
-                              text: "IN",
-                              fontSize: 28,
-                              fontWeight: FontWeight.w500,
-                              color: Get.isDarkMode ? Colors.black:Colors.white,
-                              underLine: TextDecoration.none),
-                        ],
-                      ),
-                      SizedBox(height: 50),
-                      const SizedBox(height: 20),
-                      AuthTextFormField(
-                        controller: emailController,
-                        obscureText: false,
-                        validator: (value) {
-                          if(!RegExp(validationEmail).hasMatch(value)){
-                            return "Invalid email";
-
-                          }
-                          else {
-                            return null;
-                          }
-                        },
-                        prefixIcon:Get.isDarkMode ?  Image.asset('assets/images/email.png'):Icon(Icons.email,color: Colors.pink,size: 30,),
-                        suffixIcon: const Text(""),
-                        hintText: "Email",
-                      ),
-                      const SizedBox(height: 20),
-
-                      GetBuilder<AuthController>(builder: (_){
-                        return  AuthTextFormField(
-                          controller: passwordController,
-                          obscureText: controller.isVisibility ? false :true,
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            TextUtils(
+                                text: "LOG",
+                                fontSize: 28,
+                                fontWeight: FontWeight.w500,
+                                color:Get.isDarkMode ? mainColor:pinkClr,
+                                underLine: TextDecoration.none),
+                            SizedBox(width: 3),
+                            TextUtils(
+                                text: "IN",
+                                fontSize: 28,
+                                fontWeight: FontWeight.w500,
+                                color: Get.isDarkMode ? Colors.black:Colors.white,
+                                underLine: TextDecoration.none),
+                          ],
+                        ),
+                        SizedBox(height: 50),
+                        const SizedBox(height: 20),
+                        AuthTextFormField(
+                          controller: emailController,
+                          obscureText: false,
                           validator: (value) {
-                            if(value.toString().length <6){
-                              return "Password should be longer or equal 6 characters";
+                            if(!RegExp(validationEmail).hasMatch(value)){
+                              return "Invalid email";
 
                             }
                             else {
                               return null;
                             }
                           },
-                          prefixIcon: Get.isDarkMode ? Image.asset('assets/images/lock.png'):Icon(Icons.lock,color: Colors.pink,size: 30,),
-                          suffixIcon: IconButton(
-                            onPressed: (){
-                              controller.visibility();
+                          prefixIcon:Get.isDarkMode ?  Image.asset('assets/images/email.png'):Icon(Icons.email,color: Colors.pink,size: 30,),
+                          suffixIcon: const Text(""),
+                          hintText: "Email",
+                        ),
+                        const SizedBox(height: 20),
+
+                        GetBuilder<AuthController>(builder: (_){
+                          return  AuthTextFormField(
+                            controller: passwordController,
+                            obscureText: controller.isVisibility ? false :true,
+                            validator: (value) {
+                              if(value.toString().length <6){
+                                return "Password should be longer or equal 6 characters";
+
+                              }
+                              else {
+                                return null;
+                              }
                             },
-                            icon:controller.isVisibility ?
-                            const    Icon(Icons.visibility_off, color: Colors.black,)
-                                :const Icon(Icons.visibility, color: Colors.black,),
-                          ),
-                          hintText: "Password",
-                        );
-                      }),
+                            prefixIcon: Get.isDarkMode ? Image.asset('assets/images/lock.png'):Icon(Icons.lock,color: Colors.pink,size: 30,),
+                            suffixIcon: IconButton(
+                              onPressed: (){
+                                controller.visibility();
+                              },
+                              icon:controller.isVisibility ?
+                              const    Icon(Icons.visibility_off, color: Colors.black,)
+                                  :const Icon(Icons.visibility, color: Colors.black,),
+                            ),
+                            hintText: "Password",
+                          );
+                        }),
     Align(
       alignment: Alignment.centerRight,
       child: TextButton(onPressed: (){
@@ -111,43 +113,63 @@ class LoginScreen extends StatelessWidget {
       )
       ),
     ),
-                      SizedBox(height: 50),
-                      CheckWidget(),
-                      SizedBox(height: 50),
-                      AuthButton(
-                        text: "LOG IN",
-                        onPressed: () {},
-                      ),
+                        SizedBox(height: 50),
+
+                        SizedBox(height: 50),
+
+                        GetBuilder<AuthController>(builder: (_){
+                         return AuthButton(
+                            text: "LOG IN",
+                           onPressed: () {
+                             if (formKey.currentState!.validate()) {
+                               String email = emailController.text.trim();
+                               String password = passwordController.text;
+
+                               controller.logInFirebase(
+                                   email: email,
+                                   password: password);
+                             }
+
+                           },
+                          );
+                        }),
+
 SizedBox(height: 20),
-                      TextUtils(text: "OR",
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: Get.isDarkMode ? Colors.black : Colors.white,
-                          underLine: TextDecoration.none),
-                     const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          InkWell(
-                              child: Image.asset("assets/images/facebook.png"),
-                            onTap: (){
+                        TextUtils(text: "OR",
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: Get.isDarkMode ? Colors.black : Colors.white,
+                            underLine: TextDecoration.none),
+                       const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GetBuilder<AuthController>(builder: (_){
+                              return  InkWell(
+                                child: Image.asset("assets/images/facebook.png"),
+                                onTap: (){
+                                  controller.facebookSignInFirebase();
+                                },
 
-                            },
+                              );
+                            }),
 
-                          ),
-                          const SizedBox(width: 10),
+                            const SizedBox(width: 10),
 
 
-                          InkWell(
-                            child:      Image.asset("assets/images/google.png"),
-                            onTap: (){
+                           GetBuilder<AuthController>(builder: (_){
+                             return  InkWell(
+                               child:      Image.asset("assets/images/google.png"),
+                               onTap: (){
+       controller.googleSignInFirebase();
+                               },
 
-                            },
-
-                          ),
-                        ],
-                      )
-                    ],
+                             );
+                           })
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

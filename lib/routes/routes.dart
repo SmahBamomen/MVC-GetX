@@ -3,6 +3,7 @@
 import 'package:eco_system/logic/bingings/auth_binding.dart';
 import 'package:eco_system/view/screens/auth/forget_password_screen.dart';
 import 'package:eco_system/view/screens/auth/login_screen.dart';
+import 'package:eco_system/view/screens/auth/main_screen.dart';
 import 'package:eco_system/view/screens/signup_screen.dart';
 import 'package:eco_system/view/screens/welcome_screen.dart';
 import 'package:get/get.dart';
@@ -32,6 +33,12 @@ static final routes = [
       page: ()=>  ForgetPasswordScreen(),
       binding: AuthBinding()
   ),
+
+  GetPage(
+      name: Routes.mainScreen,
+      page: ()=>  MainScreen(),
+      binding: AuthBinding()
+  ),
 ];
 }
 
@@ -41,4 +48,5 @@ class Routes{
   static const loginScreen = '/loginScreen';
   static const signUpScreen = '/signUpScreen';
   static const forgetPasswordScreen = '/forgetPasswordScreen';
+  static const mainScreen = '/mainScreen';
 }
