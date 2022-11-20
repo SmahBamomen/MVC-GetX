@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthController extends GetxController {
@@ -13,11 +14,14 @@ class AuthController extends GetxController {
   var displayUserPhoto = '';
   FirebaseAuth auth = FirebaseAuth.instance;
   FaceBookModel? faceBookModel;
+  var isSignIn = false ;
+  final GetStorage authBox = GetStorage();
   var googleSignIn = GoogleSignIn(
       clientId: 'apps.googleusercontent.com.278843445249-g1303jt82jao41jf9204ha9ite3bq403'
 
     //  clientId: '278843445249-g1303jt82jao41jf9204ha9ite3bq403.apps.googleusercontent.com'
   );
+
   void visibility() {
     isVisibility = !isVisibility;
     update();
@@ -40,6 +44,8 @@ class AuthController extends GetxController {
         displayUserName = name;
         auth.currentUser!.updateDisplayName(name);
       });
+      isSignIn = true;
+      authBox.write('auth', isSignIn);
       update();
 
       Get.offNamed(Routes.mainScreen);
@@ -72,6 +78,8 @@ class AuthController extends GetxController {
           .then((value) {
         displayUserName = auth.currentUser!.displayName!;
       });
+      isSignIn = true;
+      authBox.write('auth', isSignIn);
       update();
       Get.offNamed(Routes.mainScreen);
     } on FirebaseAuthException catch (e) {
@@ -96,6 +104,8 @@ class AuthController extends GetxController {
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       displayUserName = googleUser!.displayName!;
       displayUserPhoto = googleUser.photoUrl!;
+      isSignIn = true;
+      authBox.write('auth', isSignIn);
       update();
       Get.offNamed(Routes.mainScreen);
     }
@@ -114,6 +124,8 @@ class AuthController extends GetxController {
    if(loginResult.status == LoginStatus.success){
      final data = await FacebookAuth.instance.getUserData();
      faceBookModel = FaceBookModel.fromJson(data) ;
+     isSignIn = true;
+     authBox.write('auth', isSignIn);
      update();
      Get.offNamed(Routes.mainScreen);
    }
@@ -144,5 +156,26 @@ class AuthController extends GetxController {
     }
   }
 
-  void signOutFirebase() {}
+  void signOutFirebase() async {
+    try {
+  await auth.signOut();
+  await googleSignIn.signOut();
+
+   await FacebookAuth.i.logOut();
+   displayUserName = '';
+   displayUserPhoto = '';
+  isSignIn = false;
+  authBox.remove("auth");
+
+   update();
+  Get.offNamed(Routes.welcomeScreen);
+    } catch(e){
+      Get.snackbar("Error", e.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white);
+    }
+
+
+  }
 }
