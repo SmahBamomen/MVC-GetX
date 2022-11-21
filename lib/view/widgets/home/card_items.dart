@@ -36,8 +36,8 @@ final controller = Get.find<ProductController>();
                 return buildCardItems(
                   image: controller.productList[index].image,
                   price: controller.productList[index].price,
-                  rate: controller.productList[index].rating.rate
-
+                  rate: controller.productList[index].rating.rate,
+productID: controller.productList[index].id
                 );
               },
 
@@ -52,6 +52,7 @@ final controller = Get.find<ProductController>();
   required String image,
     required double price ,
     required double rate,
+    required int productID,
 
 }){
 return Padding(
@@ -71,13 +72,20 @@ return Padding(
     ),
     child: Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            IconButton(onPressed: (){}, icon: Icon(Icons.favorite_outline,color: Colors.black,)),
-            IconButton(onPressed: (){}, icon: Icon(Icons.add,color: Colors.black,))
-          ],
-        ),
+       Obx(() =>  Row(
+         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+         children: [
+           IconButton(onPressed: (){
+controller.manageFavourites(productID);
+           },
+               icon:controller.isFavourites(productID) ?
+                     Icon(Icons.favorite,color: Colors.red,)
+
+  : Icon(Icons.favorite_outline,color: Colors.black,)
+           ),
+           IconButton(onPressed: (){}, icon: Icon(Icons.add,color: Colors.black,))
+         ],
+       ),),
         Container(
           width: double.infinity,
           height: 140,
