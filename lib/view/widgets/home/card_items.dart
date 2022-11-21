@@ -1,4 +1,6 @@
+import 'package:eco_system/logic/controllers/cart_controller.dart';
 import 'package:eco_system/logic/controllers/product_controller.dart';
+import 'package:eco_system/model/product_model.dart';
 import 'package:eco_system/utils/theme.dart';
 import 'package:eco_system/view/widgets/text_utils.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +8,7 @@ import 'package:get/get.dart';
 class CardItems extends StatelessWidget {
    CardItems({Key? key}) : super(key: key);
 final controller = Get.find<ProductController>();
-
+final cartController = Get.find<CartController>();
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -37,7 +39,8 @@ final controller = Get.find<ProductController>();
                   image: controller.productList[index].image,
                   price: controller.productList[index].price,
                   rate: controller.productList[index].rating.rate,
-productID: controller.productList[index].id
+productID: controller.productList[index].id,
+                  productModels: controller.productList[index]
                 );
               },
 
@@ -53,6 +56,7 @@ productID: controller.productList[index].id
     required double price ,
     required double rate,
     required int productID,
+    required ProductModels productModels
 
 }){
 return Padding(
@@ -83,7 +87,9 @@ controller.manageFavourites(productID);
 
   : Icon(Icons.favorite_outline,color: Colors.black,)
            ),
-           IconButton(onPressed: (){}, icon: Icon(Icons.add,color: Colors.black,))
+           IconButton(onPressed: (){
+             cartController.addProductToCrt(productModels);
+           }, icon: Icon(Icons.shopping_cart,color: Colors.black,))
          ],
        ),),
         Container(
