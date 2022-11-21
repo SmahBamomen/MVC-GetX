@@ -2,6 +2,7 @@
 
 import 'package:eco_system/logic/bingings/auth_binding.dart';
 import 'package:eco_system/logic/bingings/main_binding.dart';
+import 'package:eco_system/logic/bingings/product_binding.dart';
 import 'package:eco_system/view/screens/auth/forget_password_screen.dart';
 import 'package:eco_system/view/screens/auth/login_screen.dart';
 import 'package:eco_system/view/screens/auth/main_screen.dart';
@@ -39,7 +40,11 @@ static final routes = [
   GetPage(
       name: Routes.mainScreen,
       page: ()=>  MainScreen(),
-      bindings: [AuthBinding(),MainBinging()]
+      bindings: [
+        AuthBinding(),
+        MainBinging(),
+        ProductBinding()
+      ]
   ),
 ];
 }
