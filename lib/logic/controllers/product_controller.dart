@@ -1,5 +1,6 @@
 import 'package:eco_system/model/product_model.dart';
 import 'package:eco_system/services/product_services.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -8,6 +9,9 @@ class ProductController extends GetxController {
   var favouritesList = <ProductModels>[].obs;
   var isLoading = true.obs;
 var stoarge = GetStorage();
+
+var searchList = <ProductModels>[].obs;
+TextEditingController searchTextController = TextEditingController();
   @override
   void onInit() {
     super.onInit();
@@ -44,4 +48,18 @@ var stoarge = GetStorage();
  bool isFavourites(int productID){
      return favouritesList.any((element) => element.id == productID);
  }
+void addSearchToList(String searchName){
+  searchName = searchName.toLowerCase();
+    searchList.value = productList.where((search) {
+      var searchTitle = search.title.toLowerCase();
+      var searchPrice = search.price.toString().toLowerCase();
+      return  searchTitle.contains(searchName) || searchPrice.contains(searchName);
+    }).toList();
+    update();
+}
+void clearSearch(){
+    searchTextController.clear();
+    addSearchToList("");
+}
+
 }
