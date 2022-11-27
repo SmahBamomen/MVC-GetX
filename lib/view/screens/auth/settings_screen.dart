@@ -4,6 +4,9 @@ import 'package:eco_system/logic/controllers/auth_controller.dart';
 import 'package:eco_system/logic/controllers/theme_controller.dart';
 import 'package:eco_system/utils/theme.dart';
 import 'package:eco_system/view/widgets/settings/dark_mode_widget.dart';
+import 'package:eco_system/view/widgets/settings/language_widget.dart';
+import 'package:eco_system/view/widgets/settings/log_out_widget.dart';
+import 'package:eco_system/view/widgets/settings/profile_widget.dart';
 import 'package:eco_system/view/widgets/text_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,23 +21,23 @@ class SettingScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
-          // ProfileImage(),
+          ProfileWidget(),
           const SizedBox(height: 10),
           Divider(color: Get.isDarkMode ? Colors.white : Colors.grey,thickness: 2,),
           const SizedBox(height: 20),
           TextUtils(
-              text: "GENERAL",
+              text: "GENERAL".tr,
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: Get.isDarkMode ? pinkClr : mainColor,
               underLine: TextDecoration.none),
           const SizedBox(height: 20),
           // IconWidget(),
-          // DarkModeWidget(),
+          DarkModeWidget(),
           const SizedBox(height: 20),
-          // LanguageWidget(),
+          LanguageWidget(),
           const SizedBox(height: 20),
-          // LogOutWidget(),
+          LogOutWidget(),
           const SizedBox(height: 20),
 
         ],

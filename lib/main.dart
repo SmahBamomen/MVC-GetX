@@ -1,5 +1,7 @@
+import 'package:eco_system/language/localiztion.dart';
 import 'package:eco_system/logic/controllers/theme_controller.dart';
 import 'package:eco_system/routes/routes.dart';
+import 'package:eco_system/utils/my_string.dart';
 import 'package:eco_system/utils/theme.dart';
 import 'package:eco_system/view/screens/welcome_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,6 +26,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      locale: Locale(GetStorage().read<String>('lang').toString()),
+      translations: LocaliztionApp(),
+      fallbackLocale: Locale(ene),
       title: 'Asroo Shop',
       debugShowCheckedModeBanner: false,
       theme: ThemesApp.light,

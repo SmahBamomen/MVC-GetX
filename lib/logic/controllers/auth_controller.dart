@@ -10,18 +10,30 @@ import 'package:google_sign_in/google_sign_in.dart';
 class AuthController extends GetxController {
   bool isVisibility = false;
   bool isCheckBox = false;
-  var displayUserName = '';
-  var displayUserPhoto = '';
+  var displayUserName = ''.obs;
+  var displayUserPhoto = ''.obs;
+  var displayUserEmail = ''.obs;
   FirebaseAuth auth = FirebaseAuth.instance;
   FaceBookModel? faceBookModel;
   var isSignIn = false ;
+  User? get userProfiloe => auth.currentUser;
   final GetStorage authBox = GetStorage();
   var googleSignIn = GoogleSignIn(
       clientId: 'apps.googleusercontent.com.278843445249-g1303jt82jao41jf9204ha9ite3bq403'
 
     //  clientId: '278843445249-g1303jt82jao41jf9204ha9ite3bq403.apps.googleusercontent.com'
   );
+  @override
+  void onInit() {
+    displayUserName.value =
+    (userProfiloe != null ? userProfiloe!.displayName : "")!;
+    displayUserPhoto.value.isEmpty ? "" :
+    (userProfiloe != null ? userProfiloe!.photoURL : "")!;
 
+    displayUserEmail.value = (userProfiloe != null ? userProfiloe!.email : "")!;
+
+    super.onInit();
+  }
   void visibility() {
     isVisibility = !isVisibility;
     update();
@@ -41,7 +53,7 @@ class AuthController extends GetxController {
       await auth
           .createUserWithEmailAndPassword(email: email, password: password)
           .then((value) {
-        displayUserName = name;
+        displayUserName.value = name;
         auth.currentUser!.updateDisplayName(name);
       });
       isSignIn = true;
@@ -71,39 +83,57 @@ class AuthController extends GetxController {
     }
   }
 
-  void logInFirebase({required String email, required String password}) async {
+  void logInFirebase({
+    required String email,
+    required String password,
+  }) async {
     try {
       await auth
           .signInWithEmailAndPassword(email: email, password: password)
-          .then((value) {
-        displayUserName = auth.currentUser!.displayName!;
-      });
+          .then((value) =>
+      displayUserName.value = auth.currentUser!.displayName!);
+
       isSignIn = true;
-      authBox.write('auth', isSignIn);
+      authBox.write("auth", isSignIn);
+
       update();
       Get.offNamed(Routes.mainScreen);
-    } on FirebaseAuthException catch (e) {
-      String title = e.code.replaceAll(RegExp('_'), '').capitalize!;
+    } on FirebaseAuthException catch (error) {
+      String title = error.code.replaceAll(RegExp('-'), ' ').capitalize!;
       String message = '';
-      if (e.code == 'user-not-found') {
+
+      if (error.code == 'user-not-found') {
         message =
-            'Account does not exists for that $email .. Create your account by signing up..';
-      } else if (e.code == 'wrong-password') {
-        message = e.message.toString();
+        ' Account does not exists for that $email.. Create your account by signing up..';
+      } else if (error.code == 'wrong-password') {
+        message = ' Invalid Password... PLease try again! ';
+      } else {
+        message = error.message.toString();
       }
-      Get.snackbar(title, message,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white);
+      Get.snackbar(
+        title,
+        message,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    } catch (error) {
+      Get.snackbar(
+        'Error!',
+        error.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
     }
   }
-
   void googleSignInFirebase() async {
 
     try{
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-      displayUserName = googleUser!.displayName!;
-      displayUserPhoto = googleUser.photoUrl!;
+      displayUserName.value = googleUser!.displayName!;
+      displayUserPhoto.value = googleUser.photoUrl!;
+      displayUserEmail.value = googleUser.email;
       isSignIn = true;
       authBox.write('auth', isSignIn);
       update();
@@ -162,8 +192,8 @@ class AuthController extends GetxController {
   await googleSignIn.signOut();
 
    await FacebookAuth.i.logOut();
-   displayUserName = '';
-   displayUserPhoto = '';
+   displayUserName.value = '';
+   displayUserPhoto.value = '';
   isSignIn = false;
   authBox.remove("auth");
 
